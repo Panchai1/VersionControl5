@@ -16,27 +16,29 @@
 //   // Expects page to have a heading with the name of Installation.
 //   await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
 // });
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
-test('ตรวจสอบฟอร์มหน้า IndexPage', async ({ page }) => {
-  // เปิดเว็บแอปของคุณ
+test('ทดสอบฟอร์มการสมัครสมาชิก', async ({ page }) => {
+  // เปิดเว็บแอป (ตรวจสอบว่า dev server รันอยู่)
   await page.goto('https://playwright.dev/');
 
-  // ตรวจสอบว่าปุ่ม Submit มีอยู่
-  const submitBtn = page.locator('button:has-text("Submit")');
-  await expect(submitBtn).toBeVisible();
-
-  // กรอกข้อมูลลงในฟอร์ม
+  // กรอกข้อมูลในฟอร์ม
   await page.fill('input[label="Full Name"]', 'Panachai Kantasan');
   await page.fill('input[label="Email"]', 'test@example.com');
   await page.fill('input[label="Password"]', '123456');
 
-  // คลิกปุ่ม Submit
-  await submitBtn.click();
+  // ตรวจสอบว่าปุ่ม Submit ถูกเปิดใช้งาน
+  const submitButton = page.locator('button:has-text("Submit")');
+  await expect(submitButton).toBeEnabled();
 
-  // ตรวจสอบ alert (ถ้ามี)
+  // คลิกปุ่ม Submit
   page.on('dialog', async dialog => {
     expect(dialog.message()).toContain('Panachai Kantasan');
     await dialog.dismiss();
   });
+  await submitButton.click();
+
+  // ตรวจสอบปุ่ม Reset
+  const resetButton = page.locator('button:has-text("Reset")');
+  await expect(resetButton).toBeVisible();
 });
