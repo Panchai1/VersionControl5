@@ -1,85 +1,61 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
+  <q-page padding class="bg-grey-2">
+    <div class="q-pa-md">
+      <q-card class="q-pa-lg shadow-2 rounded-xl max-w-md mx-auto">
+        <q-card-section>
+          <div class="text-h6 text-center">Basic Form</div>
+        </q-card-section>
 
-    <q-form
-      @submit="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md"
-    >
-      <q-input
-        filled
-        v-model="name"
-        label="Your name *"
-        hint="Name and surname"
-        lazy-rules
-        :rules="[ val => val && val.length > 0 || 'Please type something']"
-      />
+        <q-separator />
 
-      <q-input
-        filled
-        type="number"
-        v-model="age"
-        label="Your age *"
-        lazy-rules
-        :rules="[
-          val => val !== null && val !== '' || 'Please type your age',
-          val => val > 0 && val < 100 || 'Please type a real age'
-        ]"
-      />
+        <q-card-section>
+          <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+            <q-input
+              filled
+              v-model="form.name"
+              label="Full Name"
+              required
+            />
+            <q-input
+              filled
+              v-model="form.email"
+              type="email"
+              label="Email"
+              required
+            />
+            <q-input
+              filled
+              v-model="form.password"
+              type="password"
+              label="Password"
+              required
+            />
 
-      <q-toggle v-model="accept" label="I accept the license and terms" />
-
-      <div>
-        <q-btn label="Submit" type="submit" color="primary"/>
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-      </div>
-    </q-form>
-
-  </div>
+            <div class="row justify-between q-mt-md">
+              <q-btn label="Submit" type="submit" color="primary" />
+              <q-btn label="Reset" type="reset" color="secondary" flat />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </div>
+  </q-page>
 </template>
 
-<script>
-import { useQuasar } from 'quasar'
+<script setup>
 import { ref } from 'vue'
 
-export default {
-  setup () {
-    const $q = useQuasar()
+const form = ref({
+  name: '',
+  email: '',
+  password: ''
+})
 
-    const name = ref(null)
-    const age = ref(null)
-    const accept = ref(false)
+function onSubmit() {
+  alert(`ชื่อ: ${form.value.name}\nอีเมล: ${form.value.email}`)
+}
 
-    return {
-      name,
-      age,
-      accept,
-
-      onSubmit () {
-        if (accept.value !== true) {
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: 'You need to accept the license and terms first'
-          })
-        }
-        else {
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted'
-          })
-        }
-      },
-
-      onReset () {
-        name.value = null
-        age.value = null
-        accept.value = false
-      }
-    }
-  }
+function onReset() {
+  form.value = { name: '', email: '', password: '' }
 }
 </script>
